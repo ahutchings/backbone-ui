@@ -4,11 +4,11 @@
       // The Backbone.Collection instance the view is bound to
       model : null,
 
-      // The Backbone.View class responsible for rendering a single item 
-      // in the collection. For simple use cases, you can pass a String instead 
+      // The Backbone.View class responsible for rendering a single item
+      // in the collection. For simple use cases, you can pass a String instead
       // which will be interpreted as the property of the model to display.
       itemView : null,
-      
+
       // Options to pass into the Backbone.View responsible for rendering the single item
       itemViewOptions : null,
 
@@ -23,7 +23,7 @@
       // The maximum height in pixels that this table show grow to.  If the
       // content exceeds this height, it will become scrollable.
       maxHeight : null,
-      
+
       // Render the the collection view on change in model
       renderOnChange : true
     },
@@ -37,13 +37,14 @@
 
     initialize : function() {
       if(this.model) {
-        this.model.bind('add', _.bind(this._onItemAdded, this));
+        this.model.on('add', this._onItemAdded, this);
         if(this.options.renderOnChange){
-          this.model.bind('change', _.bind(this._onItemChanged, this));
-        }  
-        this.model.bind('remove', _.bind(this._onItemRemoved, this));
-        this.model.bind('refresh', _.bind(this.render, this));
-        this.model.bind('reset', _.bind(this.render, this));
+          this.model.on('change',this._onItemChanged, this);
+        }
+        this.model.on('remove', this._onItemRemoved, this);
+        this.model.on('refresh', this.render, this);
+        this.model.on('reset', this.render, this);
+        this.model.on('sort', this.render, this);
       }
     },
 
@@ -58,7 +59,7 @@
         if(!!this._emptyContent.parentNode) this._emptyContent.parentNode.removeChild(this._emptyContent);
         this._emptyContent = null;
       }
-       
+
       // render the new item
       var properIndex = list.indexOf(model);
       var el = this._renderItem(model, properIndex);
